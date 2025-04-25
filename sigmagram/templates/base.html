@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Сайт{% endblock %}</title>
+
+    <link rel="icon" type="image/x-icon" href="/static/img/favicon.ico">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/base.css">
+    <style>
+        #toggleButton {
+            {% if user.photo_avatar %}
+                background-image: url('/static/user_img/{{ user.photo_avatar }}');
+            {% else %}
+                background-image: url('/static/img/avatar 1.png');
+            {% endif %}
+        }
+    </style>
+</head>
+<body>
+    <header class="gradient-header">
+        <a href="/">
+            <img src="/static/img/v sigma.png" alt="" class="logo-img" width="200">
+        </a>
+        <button id="toggleButton"></button>
+    </header>
+    <div class="main-unit">
+        <div class="change-list">
+            <a href="/" class="change_but">Главная</a>
+            <a href="/chat" class="change_but">чат</a>
+        </div>
+        {% block form %}{% endblock %}
+        {% block chat %}{% endblock %}
+        {% block feed %}{% endblock %}
+    </div>
+    <div id="sideBlock" class="side-block">
+        <div class="profile-header">
+            <div class="banner">
+                {% if user.photo_banner %}
+                        <img src="/static/user_img/{{ user.photo_banner }}" class="logo">
+                    {% else %}
+                        <img src="/static/img/border.png" class="logo">
+                    {% endif %}
+                <div class="avatar-container">
+                    {% if user.photo_avatar %}
+                        <img src="/static/user_img/{{ user.photo_avatar }}" class="avatar">
+                    {% else %}
+                        <img src="/static/img/avatar 1.png" class="avatar">
+                    {% endif %}
+                    <div class="username">{{ user.name }}<br>{{ user.surname }}</div>
+                </div>
+            </div>
+        </div>
+        </br>
+        </br>
+        <a href="/prof_settings" class="setings_but">Настройки профиля</a>
+
+        <a href="/log_out" class="setings_but" style="color: red; position: absolute; right: 15px; bottom: 15px;">Выйти из профиля</a>
+        <button id="closeButton" style="display: none"></button>
+    </div>
+
+    <script src="/static/js/base.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

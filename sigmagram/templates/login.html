@@ -1,0 +1,28 @@
+{% extends "login base.html" %}
+
+{% block title %}Авторизация{% endblock %}
+
+{% block content %}
+<h2 class="text-center mb-4">Вход в аккаунт</h2>
+<form method="POST" action="{{ url_for('login') }}">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+        {{ form.login.label(class="form-label") }}
+        {{ form.login(class="form-control", placeholder="Введите логин") }}
+        {% for error in form.login.errors %}
+            <span class="text-danger">{{ error }}</span>
+        {% endfor %}
+    </div>
+    <div class="mb-3">
+        {{ form.password.label(class="form-label") }}
+        {{ form.password(class="form-control", placeholder="Введите пароль") }}
+        {% for error in form.password.errors %}
+            <span class="text-danger">{{ error }}</span>
+        {% endfor %}
+    </div>
+    <div class="d-grid">
+        {{ form.submit(class="subbut btn btn-primary") }}
+        <a href="/reg" class="reg-btn btn">Регистрация</a>
+    </div>
+</form>
+{% endblock %}

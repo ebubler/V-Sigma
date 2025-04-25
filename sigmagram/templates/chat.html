@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}чат{% endblock %}
+
+{% block chat %}
+<link rel="stylesheet" href="/static/css/chat.css">
+  <div class="chat_container">
+    <div class="chat-list" id="chatList">
+      <div class="chat-item active" data-chat-id="1">
+        <img src="https://sun1-90.userapi.com/s/v1/ig2/Pw00a7zYlVEOXYzFwbq-VUJbj3XRjJAwp75aVyyRHNV8--p0AI_L6Kp4wwj4AgvFjNIMN5ShaVJTKleSUs8cbxxi.jpg?size=960x960&quality=95&crop=0,0,960,960&ava=1" alt="Аватар" class="chat-avatar">
+        <div class="chat-info">
+          <p class="chat-name">Имя пользователя 1</p>
+          <p class="chat-preview">Последнее сообщение...</p>
+        </div>
+      </div>
+      <div class="chat-item" data-chat-id="2">
+        <img src="https://sun1-90.userapi.com/s/v1/ig2/Pw00a7zYlVEOXYzFwbq-VUJbj3XRjJAwp75aVyyRHNV8--p0AI_L6Kp4wwj4AgvFjNIMN5ShaVJTKleSUs8cbxxi.jpg?size=960x960&quality=95&crop=0,0,960,960&ava=1" alt="Аватар" class="chat-avatar">
+        <div class="chat-info">
+          <p class="chat-name">Имя пользователя 2</p>
+          <p class="chat-preview">Ещё одно сообщение...</p>
+        </div>
+      </div>
+    </div>
+    <div class="active-chat">
+      <div class="chat-header">
+        <h2>Имя активного чата</h2>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="message other">
+          Привет! Как дела?
+        </div>
+        <div class="message user">
+          Привет! Всё отлично, спасибо!
+        </div>
+        {% for mess in messages %}
+            {% if mess.name == user.login %}
+                <div class="message user">
+                    {{ mess.message }}
+                </div>
+            {% else %}
+                <div class="message other">
+                    {{ mess.message }}
+                </div>
+            {% endif %}
+        {% endfor %}
+      </div>
+      <div class="chat-input">
+        <input type="text" id="messageInput" placeholder="Введите сообщение...">
+        <button id="sendMessage">
+          <img width="30px" src="/static/img/send_38dp_FFFFFF_FILL0_wght400_GRAD0_opsz40.png">
+        </button>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <script src="/static/js/chat.js">
+    window.currentUser = {{ user.login }}; // Имя текущего пользователя
+    window.currentChatId = {{ chat_id }}; // ID текущего чата (число)
+  </script>
+{% endblock %}

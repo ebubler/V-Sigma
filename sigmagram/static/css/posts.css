@@ -1,0 +1,127 @@
+.block-posts {
+  color: #ffffff;
+  min-height: 80vh;
+  width: 70%;
+  max-width: 70%;
+  margin: auto;
+}
+
+.head-post {
+    background: #434343;
+    margin: auto;
+    margin-left: 50px;
+    width: 70%;
+    max-width: 70%;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: white;
+}
+
+.add-post {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #434343;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        color: white;
+
+.add-post * {
+width: 100%;
+}
+
+.add-post-input {
+    color: white;
+    background: #404040;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #555555;
+    border-radius: 5px;
+}
+
+
+.posts {
+    background: #434343;
+    margin: auto;
+    margin-top: 30px;
+    margin-left: 50px;
+    width: 70%;
+    max-width: 70%;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: white;
+}
+
+.post {
+    background: #525252;
+    margin: auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: white;
+}
+
+.carousel-container {
+    max-width: 350px;
+    max-height: 400px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.carousel-item {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* Соотношение сторон 16:9 (9 / 16 = 0.5625) */
+    overflow: hidden;
+}
+
+.carousel-item img,
+.carousel-item video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+.remove-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.add-photo-btn {
+    display: block;
+    margin: 20px auto;
+    text-align: center;
+}
+.custom-control {
+    width: 30px; /* Уменьшаем ширину стрелок */
+    height: 30px;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+    top: 50%; /* Позиционируем по центру вертикали */
+    transform: translateY(-50%);
+}
+.custom-control:hover {
+    opacity: 1;
+}
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-size: 15px 15px; /* Уменьшаем размер иконок */
+}

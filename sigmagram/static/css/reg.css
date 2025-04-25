@@ -1,0 +1,76 @@
+.gradient-header {
+    background: radial-gradient(ellipse at top right, #BE77C7, #7E4F84);
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+.form-container {
+    background: #434343;
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: white;
+}
+
+body {
+    background: radial-gradient(ellipse at top right, #555555, #262626);
+    min-height: 100vh;
+    margin: 0;
+}
+
+.subbut {
+    background: radial-gradient(ellipse at top right, #BE77C7, #7E4F84);
+    border: 0px;
+}
+
+.subbut:hover {
+    background: radial-gradient(ellipse at top right, #BA71C1, #7A4A81);
+}
+
+.back-but {
+    color: white;
+    background: #434343;
+    border: 0px;
+}
+
+.back-but:hover {
+    color: white;
+    background: #333333;
+    border: 0px;
+}
+
+.back-but:active {
+    color: white;
+    background: #333333;
+    border: 0px;
+}
+
+.text_reg {
+    margin: 0;
+    font-size: 2.5rem;
+    text-align: center;
+}
+
+.reg-btn {
+    color: #cccccc
+}
+
+.reg-btn:hover {
+    color: #ffffff
+}
+
+.reg-btn:active {
+    color: #ffffff
+    border: 0px;
+}

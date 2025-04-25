@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Редактирование профиля{% endblock %}
+
+{% block form %}
+<div class="form-container">
+
+<form method="POST" action="{{ url_for('prof_settings') }}" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <div class="profile-header_edit">
+            <div class="banner_edit">
+                <img
+                    id="bannerPreview"
+                    src="{% if user.photo_banner %}/static/user_img/{{ user.photo_banner }}{% else %}/static/img/border.png{% endif %}"
+                    alt="Баннер"
+                    class="logo_edit clickable-image"
+                >
+
+                <input
+                    type="file"
+                    name="img_banner"
+                    id="bannerInput"
+                    accept="image/*"
+                    style="display: none;"
+                >
+                <div class="avatar-container_edit">
+                    <img
+                    id="avatarPreview"
+                    src="{% if user.photo_avatar %}/static/user_img/{{ user.photo_avatar }}{% else %}/static/img/avatar 1.png{% endif %}"
+                    alt="Аватар"
+                    class="avatar_edit clickable-image"
+                >
+
+                <input
+                    type="file"
+                    id="avatarInput"
+                    name="img_avatar"
+                    accept="image/*"
+                    style="display: none;"
+                >
+                    <div class="username_edit">{{ user.name }}<br>{{ user.surname }}</div>
+                </div>
+            </div>
+        </div>
+    <br>
+    <br>
+    <br>
+    <div class="edit-inp">
+    <div class="mb-3">
+        {{ form.login.label(class="form-label") }}
+        {{ form.login(class="form-control", placeholder="Введите ваш логин") }}
+        {% for error in form.name.errors %}
+            <span class="text-danger">{{ error }}</span>
+        {% endfor %}
+    </div>
+    <div class="mb-3">
+        {{ form.name.label(class="form-label") }}
+        {{ form.name(class="form-control", placeholder="Введите имя") }}
+        {% for error in form.name.errors %}
+            <span class="text-danger">{{ error }}</span>
+        {% endfor %}
+    </div>
+    <div class="mb-3">
+        {{ form.surname.label(class="form-label") }}
+        {{ form.surname(class="form-control", placeholder="Введите фамилию") }}
+        {% for error in form.surname.errors %}
+            <span class="text-danger">{{ error }}</span>
+        {% endfor %}
+    </div>
+    <div class="mb-3">
+        {{ form.date_of_birth.label(class="form-label") }}
+        {{ form.date_of_birth(class="form-control", type="date", max=true_date) }}
+        {% for error in form.date_of_birth.errors %}
+            <span class="text-danger">{{ error }}</span>
+        {% endfor %}
+    </div>
+    <div class="mb-3">
+        {{ form.sex.label(class="form-label") }}
+        {{ form.sex(class="form-select") }}
+        {% for error in form.sex.errors %}
+            <span class="text-danger">{{ error }}</span>
+        {% endfor %}
+    </div>
+    </div>
+    <div class="d-grid but-sub">
+        {{ form.submit(class="subbut btn btn-primary") }}
+    </div>
+</form>
+</div>
+{% endblock %}
