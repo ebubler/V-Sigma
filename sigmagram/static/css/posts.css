@@ -12,26 +12,31 @@
     margin-left: 50px;
     width: 70%;
     max-width: 70%;
+    text-align: center;
+    height: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: white;
+    border: none;
+    border: 1px solid #555555;
+}
+
+.add-post {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #434343;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     color: white;
+    z-index: 1000;
 }
 
-.add-post {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: #434343;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        color: white;
-
 .add-post * {
-width: 100%;
+    width: 100%;
 }
 
 .add-post-input {
@@ -44,28 +49,42 @@ width: 100%;
     border-radius: 5px;
 }
 
+.add-post-btn-closse {
+position: absolute;
+    top: 10px;
+    max-width: 30px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+  }
 
-.posts {
+.author-image {
+    width: 70px;
+    height: 70px;
+    background-color: transparent;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 3px solid white;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.post-style {
     background: #434343;
     margin: auto;
-    margin-top: 30px;
     margin-left: 50px;
     width: 70%;
     max-width: 70%;
-    padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     color: white;
+    border: none;
+    border: 1px solid #555555;
 }
 
-.post {
-    background: #525252;
-    margin: auto;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    color: white;
-}
 
 .carousel-container {
     max-width: 350px;
@@ -124,4 +143,39 @@ width: 100%;
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
     background-size: 15px 15px; /* Уменьшаем размер иконок */
+}
+
+/* Стили для карусели в постах */
+.content-post-media {
+    margin: 15px 0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.content-post-media .carousel {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.content-post-media img,
+.content-post-media video {
+    max-height: 500px;
+    object-fit: contain;
+    background-color: #000;
+}
+
+.content-post-media .carousel-control-prev,
+.content-post-media .carousel-control-next {
+    width: 5%;
+    opacity: 0.7;
+}
+
+.content-post-media .carousel-control-prev:hover,
+.content-post-media .carousel-control-next:hover {
+    opacity: 1;
+}
+
+.content-post-media .carousel {
+    position: relative;
+    z-index: 1; /* Убедитесь, что это значение меньше, чем у .add-post */
 }

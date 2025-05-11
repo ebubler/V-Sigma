@@ -1,3 +1,5 @@
+import base64
+import json
 import os.path
 from datetime import date
 from datetime import datetime
@@ -6,12 +8,13 @@ from flask_socketio import SocketIO, emit, join_room
 from flask import Flask, render_template, redirect, url_for, flash, request, make_response
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
+from werkzeug.utils import secure_filename
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.fields.choices import SelectField
 from wtforms.fields.datetime import DateField
 from wtforms.fields.simple import TextAreaField
 from wtforms.validators import DataRequired, Length, EqualTo, Optional
-from sqlalchemy import Column, Integer, String, create_engine, Date
+from sqlalchemy import Column, Integer, String, create_engine, Date, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from hash import generate_hash, check_password, check_login
@@ -78,6 +81,7 @@ class Edit_prof(FlaskForm):
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key'
+app.config['MAX_CONTENT_LENGTH'] = None
 socketio = SocketIO(app)
 
 engine = create_engine("sqlite:///data/database.db")
@@ -144,8 +148,10 @@ class Posts(Base):
 
     id = Column(Integer, primary_key=True)
     author = Column(String(255), nullable=True)
-    date_create = Column(Date, nullable=True)
+    date_create = Column(DateTime, nullable=True)
     file = Column(String(255), nullable=True)
+    title = Column(String(255), nullable=True)
+    description = Column(String(255), nullable=True)
     content = Column(String(255), nullable=True)
     likes = Column(String(255), nullable=True)
     comments = Column(String(255), nullable=True)
@@ -225,12 +231,75 @@ def register():
 @app.route('/', methods=['GET', 'POST'])
 @login_required
 def index():
+    posts = session.query(Posts).all()
+    for post in posts:
+        post.author_name = session.query(User).filter(User.login == post.author).first().name
+        post.author_surname = session.query(User).filter(User.login == post.author).first().surname
     add_post_form = AddPostForm()
     if add_post_form.validate_on_submit():
-        print(add_post_form.data)
+        try:
+            # Основные данные поста
+            title_data = add_post_form.title.data
+            description_data = add_post_form.description.data
+            author = request.cookies.get('login')
+            date_create = datetime.now()
+            print(date_create)
+
+            media_files = []
+            i = 0
+            while True:
+                file_key = f'media-{i}'
+                if file_key not in request.files:
+                    break
+                file = request.files[file_key]
+                if file.filename == '':
+                    i += 1
+                    continue
+
+                # Сохраняем файл
+                filename = secure_filename(
+                    f"{author}_{int(datetime.now().timestamp())}_{i}.{file.filename.split('.')[-1]}")
+                filepath = os.path.join('static/uploads/media', filename)
+                os.makedirs(os.path.dirname(filepath), exist_ok=True)
+                file.save(filepath)
+                media_files.append(filename)
+                i += 1
+
+            regular_files = []
+            for file in request.files.getlist('file'):
+                if file.filename == '':
+                    continue
+
+                filename = secure_filename(f"{author}_{int(datetime.now().timestamp())}_{file.filename}")
+                filepath = os.path.join('static/uploads/files', filename)
+                os.makedirs(os.path.dirname(filepath), exist_ok=True)
+                file.save(filepath)
+                regular_files.append(filename)
+
+            # Создаем пост в БД
+            new_post = Posts(
+                author=author,
+                date_create=date_create,
+                title=title_data,
+                description=description_data,
+                file=','.join(regular_files) if regular_files else None,
+                content=','.join(media_files) if media_files else None,
+                likes='',
+                comments='',
+                views=''
+            )
+
+            session.add(new_post)
+            session.commit()
+
+            return redirect(url_for('index'))
+
+        except Exception as e:
+            print(f"Ошибка при создании поста: {str(e)}")
+            session.rollback()
     login = request.cookies.get('login')
     user = session.query(User).filter(User.login == login).first()
-    return render_template('posts.html', user=user, add_post_form=add_post_form)
+    return render_template('posts.html', user=user, add_post_form=add_post_form, posts=posts)
 
 @app.route('/chat')
 @login_required
