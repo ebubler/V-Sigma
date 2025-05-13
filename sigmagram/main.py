@@ -483,4 +483,4 @@ def log_out():
     return response
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True, allow_unsafe_werkzeug=True, port=80)
+    socketio.run(app, debug=True, allow_unsafe_werkzeug=True, port=80, host='0.0.0.0')
