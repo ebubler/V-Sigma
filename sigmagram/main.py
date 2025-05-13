@@ -1,27 +1,25 @@
-import base64
-import json
 import os.path
 from datetime import date
 from datetime import datetime
 
-from flask_socketio import SocketIO, emit, join_room
-from flask import Flask, render_template, redirect, url_for, flash, request, make_response
-from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileAllowed
+from flask_socketio import SocketIO
+from flask import Flask, render_template, redirect, url_for, request, make_response, jsonify
 from werkzeug.utils import secure_filename
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms.fields.choices import SelectField
-from wtforms.fields.datetime import DateField
-from wtforms.fields.simple import TextAreaField
-from wtforms.validators import DataRequired, Length, EqualTo, Optional
-from sqlalchemy import Column, Integer, String, create_engine, Date, DateTime
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from hash import generate_hash, check_password, check_login
+from hash import generate_hash, check_password
 from functools import wraps
 
+from flaskform_class import AddPostForm, LoginForm, RegisterForm, Edit_prof
+from db_init import global_init, create_session
+from db_class import User, Chat, Message, Posts, Comments
 
-user_rooms = {}
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'your-secret-key'
+app.config['MAX_CONTENT_LENGTH'] = None
+socketio = SocketIO(app)
+
+db_name = "database.db"
+session_factory = global_init(db_name)
+session = create_session(session_factory)
 
 def login_required(f):
     @wraps(f)
@@ -38,136 +36,6 @@ def login_required(f):
         response.delete_cookie('hpassword')
         return redirect(url_for('login'))
     return decorated_function
-
-
-class AddPostForm(FlaskForm):
-    title = StringField('Заголовок', validators=[DataRequired()])
-    description = TextAreaField('Описание', validators=[DataRequired()])
-    file = FileField('Файл', validators=[Optional()])
-    content = FileField('Контент', validators=[Optional(), FileAllowed(['jpg', 'jpeg', 'png', 'gif', 'mp4', 'webm'],'Только изображения!')])
-    submit = SubmitField('Добавить пост')
-
-
-class LoginForm(FlaskForm):
-    login = StringField('Логин', validators=[DataRequired()])
-    password = PasswordField('Пароль', validators=[DataRequired()])
-    submit = SubmitField('Войти')
-
-class RegisterForm(FlaskForm):
-    login = StringField('Логин', validators=[DataRequired(), Length(min=4, max=25)])
-    password = PasswordField('Пароль', validators=[DataRequired(), Length(min=6)])
-    confirm_password = PasswordField('Подтвердите пароль', validators=[DataRequired(), EqualTo('password')])
-    name = StringField('Имя', validators=[DataRequired()])
-    surname = StringField('Фамилия', validators=[DataRequired()])
-    date_of_birth = DateField('Дата рождения', format='%Y-%m-%d', validators=[DataRequired()])
-    sex = SelectField('Пол', choices=[('male', 'Мужской'), ('female', 'Женский')], validators=[DataRequired()])
-    submit = SubmitField('Зарегистрироваться')
-
-class Edit_prof(FlaskForm):
-    login = StringField('Логин', validators=[DataRequired()])
-    name = StringField('Имя', validators=[DataRequired()])
-    surname = StringField('Фамилия', validators=[DataRequired()])
-    date_of_birth = DateField('Дата рождения', format='%Y-%m-%d', validators=[DataRequired()])
-    sex = SelectField('Пол', choices=[('male', 'Мужской'), ('female', 'Женский')], validators=[DataRequired()])
-    photo_avatar = FileField(
-        'Загрузить аватар',
-        validators=[DataRequired(), FileAllowed(['jpg', 'jpeg', 'png'], 'Только изображения!')]
-    )
-    photo_banner = FileField(
-        'Загрузить баннер',
-        validators=[DataRequired(), FileAllowed(['jpg', 'jpeg', 'png'], 'Только изображения!')]
-    )
-    submit = SubmitField('Сохранить изменения')
-
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your-secret-key'
-app.config['MAX_CONTENT_LENGTH'] = None
-socketio = SocketIO(app)
-
-engine = create_engine("sqlite:///data/database.db")
-
-Base = declarative_base()
-
-class User(Base):
-    __tablename__ = 'users'
-
-    id = Column(Integer, primary_key=True)
-    login = Column(String(255), nullable=True)
-    hlogin = Column(String(255), nullable=True)
-    hpassword = Column(String(255), nullable=True)
-    name = Column(String(50), nullable=True)
-    surname = Column(String(50), nullable=True)
-    date_of_birth = Column(Date, nullable=True)
-    sex = Column(String(50), nullable=True)
-    photo_avatar = Column(String(255), nullable=True)
-    photo_banner = Column(String(255), nullable=True)
-
-    def update(self, **kwargs):
-        for key, value in kwargs.items():
-            if hasattr(self, key):
-                setattr(self, key, value)
-
-class Chat(Base):
-    __tablename__ = 'chats'
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String(255), nullable=True)
-    is_group = Column(String(255), nullable=True)
-    about_us = Column(String(255), nullable=True)
-    date_create = Column(Date, nullable=True)
-    photo_avatar = Column(String(255), nullable=True)
-    photo_banner = Column(String(255), nullable=True)
-
-    users = Column(String(255), nullable=True)
-    messages = Column(String(255), nullable=True)
-
-    def update(self, **kwargs):
-        for key, value in kwargs.items():
-            if hasattr(self, key):
-                setattr(self, key, value)
-
-
-class Message(Base):
-    __tablename__ = 'Messages'
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String(255), nullable=True)
-    to_name = Column(String(255), nullable=True)
-    date_create = Column(Date, nullable=True)
-    message = Column(String(255), nullable=True)
-    type_mess = Column(String(255), nullable=True)
-
-    def update(self, **kwargs):
-        for key, value in kwargs.items():
-            if hasattr(self, key):
-                setattr(self, key, value)
-
-
-class Posts(Base):
-    __tablename__ = 'posts'
-
-    id = Column(Integer, primary_key=True)
-    author = Column(String(255), nullable=True)
-    date_create = Column(DateTime, nullable=True)
-    file = Column(String(255), nullable=True)
-    title = Column(String(255), nullable=True)
-    description = Column(String(255), nullable=True)
-    content = Column(String(255), nullable=True)
-    likes = Column(String(255), nullable=True)
-    comments = Column(String(255), nullable=True)
-    views = Column(String(255), nullable=True)
-
-
-    def update(self, **kwargs):
-        for key, value in kwargs.items():
-            if hasattr(self, key):
-                setattr(self, key, value)
-
-
-Base.metadata.create_all(engine)
-
-Session = sessionmaker(bind=engine)
-session = Session()
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -228,6 +96,147 @@ def register():
     fourteen_years_ago = date(today.year - 14, today.month, today.day).strftime('%Y-%m-%d')
     return render_template('register.html', form=form, nick_error=False, true_date=fourteen_years_ago)
 
+
+@app.route('/post/delete/<post_id>', methods=['DELETE'])
+@login_required
+def delete_post(post_id):
+    post = session.query(Posts).filter(Posts.id == post_id).first()
+    comments = session.query(Comments).filter(Comments.post_id == post_id).all()
+
+    if post.author != request.cookies.get('login'):
+        return jsonify({"error": "You are not the author of this post"}), 403
+
+    if post:
+        # Удаляем каждый комментарий по отдельности
+        for comment in comments:
+            session.delete(comment)
+
+        session.delete(post)
+        session.commit()
+        return jsonify({"message": "Post deleted successfully"}), 200
+    else:
+        return jsonify({"error": "Post not found"}), 404
+
+@app.route('/posts/range/user/<user_login>', methods=['GET'])
+@login_required
+def get_posts_range_user(user_login):
+    try:
+        start = request.args.get('start', default=0, type=int)
+        end = request.args.get('end', default=10, type=int)
+
+        if start < 0 or end < 0 or start > end:
+            return jsonify({"error": "Invalid range parameters"}), 400
+        posts = session.query(Posts).filter(Posts.author == user_login).order_by(Posts.id.desc()).offset(start).limit(end - start + 1).all()
+        if not posts:
+            return jsonify({"error": "Posts not found"}), 404
+
+        result = []
+        for post in posts:
+            user = session.query(User).filter(User.login == post.author).first()
+            result.append({
+                "id": post.id,
+                "title": post.title,
+                "description": post.description,
+                "content": post.content,
+                "author": post.author,
+                "file": post.file,
+                "date_create": post.date_create,
+                "author_name": user.name if user else "Unknown",
+                "author_surname": user.surname if user else "User",
+                "len_comments": len(session.query(Comments).filter_by(post_id=post.id).all()),
+                "likes": len(post.likes.split(',')) - 1,
+                "liked": request.cookies.get('login') in post.likes.split(','),
+                'photo_avatar': session.query(User).filter(User.login == post.author).first().photo_avatar
+            })
+
+        return jsonify(result)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+    finally:
+        session.close()
+
+@app.route('/posts/range', methods=['GET'])
+@login_required
+def get_posts_range():
+    try:
+        start = request.args.get('start', default=0, type=int)
+        end = request.args.get('end', default=10, type=int)
+
+        if start < 0 or end < 0 or start > end:
+            return jsonify({"error": "Invalid range parameters"}), 400
+        posts = session.query(Posts).order_by(Posts.id.desc()).offset(start).limit(end - start + 1).all()
+        if not posts:
+            return jsonify({"error": "Posts not found"}), 404
+
+        result = []
+        for post in posts:
+            user = session.query(User).filter(User.login == post.author).first()
+            result.append({
+                "id": post.id,
+                "title": post.title,
+                "description": post.description,
+                "content": post.content,
+                "author": post.author,
+                "file": post.file,
+                "date_create": post.date_create,
+                "author_name": user.name if user else "Unknown",
+                "author_surname": user.surname if user else "User",
+                "len_comments": len(session.query(Comments).filter_by(post_id=post.id).all()),
+                "likes": len(post.likes.split(',')) - 1,
+                "liked": request.cookies.get('login') in post.likes.split(','),
+                'photo_avatar': session.query(User).filter(User.login == post.author).first().photo_avatar
+            })
+
+        return jsonify(result)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+    finally:
+        session.close()
+
+@app.route('/posts/<int:post_id>/like', methods=['POST'])
+def like_post(post_id):
+    post = session.query(Posts).filter_by(id=post_id).first()
+    if not (request.cookies.get('login') in post.likes.split(',')):
+        post.likes += f'{request.cookies.get("login")},'
+    else:
+        post.likes = post.likes.replace(f'{request.cookies.get("login")},', '')
+    session.commit()
+    return jsonify({'likes': len(post.likes.split(',')) - 1,
+                    'liked': request.cookies.get('login') in post.likes.split(',')
+                    })
+
+@app.route('/posts/<int:post_id>/comments', methods=['GET', 'POST'])
+@login_required
+def post_comments(post_id):
+    current_user = request.cookies.get('login')
+    if request.method == 'GET':
+        comments = session.query(Comments).filter_by(post_id=post_id).all()
+        return jsonify([{
+            'author': c.author,
+            'author_name': session.query(User).filter(User.login == c.author).first().name,
+            'author_surname': session.query(User).filter(User.login == c.author).first().surname,
+            'message': c.message,
+            'date': c.date_create,
+            'post_id': c.post_id,
+            'photo_avatar': session.query(User).filter(User.login == c.author).first().photo_avatar
+        } for c in comments])
+
+    elif request.method == 'POST':
+        data = request.get_json()
+        comment = Comments(
+            message=data['text'].strip(),
+            post_id=post_id,
+            author=current_user,
+            date_create=datetime.now()
+        )
+        session.add(comment)
+        session.commit()
+        return jsonify({'success': True})
+
 @app.route('/', methods=['GET', 'POST'])
 @login_required
 def index():
@@ -238,12 +247,10 @@ def index():
     add_post_form = AddPostForm()
     if add_post_form.validate_on_submit():
         try:
-            # Основные данные поста
             title_data = add_post_form.title.data
             description_data = add_post_form.description.data
             author = request.cookies.get('login')
             date_create = datetime.now()
-            print(date_create)
 
             media_files = []
             i = 0
@@ -256,7 +263,6 @@ def index():
                     i += 1
                     continue
 
-                # Сохраняем файл
                 filename = secure_filename(
                     f"{author}_{int(datetime.now().timestamp())}_{i}.{file.filename.split('.')[-1]}")
                 filepath = os.path.join('static/uploads/media', filename)
@@ -266,7 +272,7 @@ def index():
                 i += 1
 
             regular_files = []
-            for file in request.files.getlist('file'):
+            for file in request.files.getlist('file-upload'):
                 if file.filename == '':
                     continue
 
@@ -276,7 +282,6 @@ def index():
                 file.save(filepath)
                 regular_files.append(filename)
 
-            # Создаем пост в БД
             new_post = Posts(
                 author=author,
                 date_create=date_create,
@@ -325,6 +330,110 @@ def chat_to_id(chat_id):
 
     return render_template('chat.html', user=user, chat_id=chat_id, messages=mess)
 
+@app.route('/subscribe/<user>', methods=['GET'])
+@login_required
+def subscribe(user):
+    login = request.cookies.get('login')
+    data_user = session.query(User).filter(User.login == login).first()
+    if login == user:
+        return 'пользователь не может подписаться на самого себя'
+    if user in str(data_user.subscriptions).split(','):
+        data_user.subscriptions = data_user.subscriptions.replace(f'{user},', '')
+    else:
+        if data_user.subscriptions:
+            data_user.subscriptions += f'{user},'
+        else:
+            data_user.subscriptions = f'{user},'
+    data_user.update()
+    session.commit()
+    return 'ok'
+
+@app.route('/friends', methods=['GET'])
+@login_required
+def friends():
+    login = request.cookies.get('login')
+    user = session.query(User).filter(User.login == login).first()
+    friends = session.query(User).filter(
+        User.subscriptions.contains(user.login + ','),
+        User.login.in_(user.subscriptions.split(','))
+    ).all()
+    subscriptions_you = session.query(User).filter(User.subscriptions.contains(user.login + ','))
+    subscriptions = session.query(User).filter(User.login.in_(user.subscriptions.split(',')))
+    return render_template('friends.html', user=user, friends=friends, subscriptions_you=subscriptions_you)
+
+@app.route('/prof', methods=['GET', 'POST'])
+def redirect_to_profile():
+    login = request.cookies.get('login')
+    return redirect(url_for('prof', user_login=login))
+
+@app.route('/prof/<user_login>', methods=['GET', 'POST'])
+@login_required
+def prof(user_login):
+    login = request.cookies.get('login')
+    user = session.query(User).filter(User.login == login).first()
+    user_data = session.query(User).filter(User.login == user_login).first()
+
+    add_post_form = AddPostForm()
+    if add_post_form.validate_on_submit():
+        try:
+            title_data = add_post_form.title.data
+            description_data = add_post_form.description.data
+            author = request.cookies.get('login')
+            date_create = datetime.now()
+
+            media_files = []
+            i = 0
+            while True:
+                file_key = f'media-{i}'
+                if file_key not in request.files:
+                    break
+                file = request.files[file_key]
+                if file.filename == '':
+                    i += 1
+                    continue
+
+                filename = secure_filename(
+                    f"{author}_{int(datetime.now().timestamp())}_{i}.{file.filename.split('.')[-1]}")
+                filepath = os.path.join('static/uploads/media', filename)
+                os.makedirs(os.path.dirname(filepath), exist_ok=True)
+                file.save(filepath)
+                media_files.append(filename)
+                i += 1
+
+            regular_files = []
+            for file in request.files.getlist('file-upload'):
+                if file.filename == '':
+                    continue
+
+                filename = secure_filename(f"{author}_{int(datetime.now().timestamp())}_{file.filename}")
+                filepath = os.path.join('static/uploads/files', filename)
+                os.makedirs(os.path.dirname(filepath), exist_ok=True)
+                file.save(filepath)
+                regular_files.append(filename)
+
+            new_post = Posts(
+                author=author,
+                date_create=date_create,
+                title=title_data,
+                description=description_data,
+                file=','.join(regular_files) if regular_files else None,
+                content=','.join(media_files) if media_files else None,
+                likes='',
+                comments='',
+                views=''
+            )
+
+            session.add(new_post)
+            session.commit()
+
+            return redirect(url_for('index'))
+
+        except Exception as e:
+            print(f"Ошибка при создании поста: {str(e)}")
+            session.rollback()
+
+    return render_template('prof.html', user=user, user_data=user_data, add_post_form=add_post_form)
+
 @app.route('/prof_settings', methods=['GET', 'POST'])
 @login_required
 def prof_settings():
@@ -372,30 +481,6 @@ def log_out():
     response.delete_cookie('login')
     response.delete_cookie('hpassword')
     return response
-
-
-@socketio.on('join_chat')
-@login_required
-def handle_join_chat(data):
-    """Подписка пользователя на комнату чата"""
-    chat_id = data['chat_id']
-    request.sid = chat_id  # Сохраняем chat_id в сессии
-    print(f"User joined chat {chat_id}")
-
-
-@socketio.on('send_message')
-@login_required
-def handle_send_message(data):
-    """Обработка нового сообщения"""
-    login = request.cookies.get('login')
-    chat_id = data['chat_id']
-    print(data)
-    print(login)
-    # Здесь можно сохранить сообщение в БД
-
-    # Отправляем сообщение всем подписанным на этот чат
-    emit('new_message', data, room=chat_id)
-    print(f"New message in chat {chat_id}: {data['message']}")
 
 if __name__ == '__main__':
     socketio.run(app, debug=True, allow_unsafe_werkzeug=True, port=80)

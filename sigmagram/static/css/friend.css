@@ -1,0 +1,66 @@
+.friend-container {
+    color: #ffffff;
+  min-height: 80vh;
+  width: 70%;
+  max-width: 70%;
+  margin: auto;
+}
+
+.friend-container1 {
+
+}
+
+.friend-buttons {
+    display: flex;
+    background: #434343;
+    margin: auto;
+    height: 40px;
+    margin-left: 50px;
+    width: 70%;
+    max-width: 70%;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: white;
+    border: none;
+    border: 1px solid #555555;
+}
+
+.friend-button {
+    width: 100%;
+    border-radius: 10px 0 0 10px;
+}
+
+.friend-button2 {
+    width: 100%;
+    border-radius: 0;
+}
+
+.friend-button3 {
+    width: 100%;
+    border-radius: 0 10px 10px 0;
+}
+
+.friend-button:hover {
+    background-color: #e0e0e0;
+}
+.friend-button.friend-active {
+    background-color: #4CAF50;
+    color: white;
+}
+.friend-list {
+    border: 1px solid #ddd;
+    padding: 15px;
+    min-height: 200px;
+}
+.friend-ul {
+    list-style-type: none;
+    padding: 0;
+}
+.friend-li {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+}
+.friend-li:last-child {
+    border-bottom: none;
+}

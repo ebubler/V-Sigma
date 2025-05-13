@@ -6,6 +6,11 @@
   margin: auto;
 }
 
+.load-more-container {
+    text-align: center;
+    margin: 20px 0;
+}
+
 .head-post {
     background: #434343;
     margin: auto;
@@ -59,6 +64,18 @@ position: absolute;
     border: none;
     border-radius: 50%;
   }
+
+.author-image-comment {
+    width: 35px;
+    height: 35px;
+    background-color: transparent;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 3px solid white;
+    border-radius: 50%;
+    object-fit: cover;
+}
 
 .author-image {
     width: 70px;
@@ -179,3 +196,202 @@ position: absolute;
     position: relative;
     z-index: 1; /* Убедитесь, что это значение меньше, чем у .add-post */
 }
+
+#posts-container {
+    margin-top: 20px;
+}
+
+/* Стили для каждого поста */
+.post-item {
+    margin-bottom: 30px;
+    background: #434343;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #555555;
+}
+
+/* Заголовок автора */
+.author-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.author-post {
+margin-left: 10px;
+font-size: 1.2em;
+font-weight: bold;
+
+}
+
+/* Текст поста */
+.post-content {
+    margin: 15px 0;
+}
+
+/* Дата поста */
+.post-date {
+    color: #aaaaaa;
+    font-size: 0.9em;
+    text-align: right;
+    margin-top: 15px;
+}
+
+/* Медиа контент */
+.post-media {
+    margin: 15px 0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Кнопка "Показать еще" */
+.load-more-container {
+    background: none;
+    margin: auto;
+    margin-left: 50px;
+    width: 70%;
+    max-width: 70%;
+    text-align: center;
+    height: 40px;
+    border-radius: 10px;
+    color: white;
+    border: none;
+    border: 1px solid none;
+}
+
+.load-more-btn {
+    background: #434343;
+    margin: auto;
+    width: 100%;
+    max-width: 100%;
+    text-align: center;
+    height: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: white;
+    border: none;
+    border: 1px solid #555555;
+}
+
+/* Отступы между элементами поста */
+.post-title {
+    margin: 10px 0;
+    font-size: 1.2em;
+}
+
+.post-text {
+    margin: 15px 0;
+    padding: 10px 0;
+    border-top: 1px solid #555555;
+    border-bottom: 1px solid #555555;
+}
+
+#posts-container {
+    margin: auto;
+    margin-left: 50px;
+    width: 70%;
+    max-width: 70%;
+}
+
+/* Стили для списка файлов */
+.file-list {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.file-icon {
+    margin-right: 10px;
+    font-size: 1.2em;
+    color: #555;
+    min-width: 20px;
+    text-align: center;
+}
+
+.file-item a {
+    color: white;
+    text-decoration: none;
+}
+
+.file-item a:hover {
+    text-decoration: underline;
+}
+
+/* Стили для кнопок действий */
+.post-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+}
+
+.like-btn, .comment-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: white;
+    font-size: 14px;
+}
+
+.like-btn:hover, .comment-btn:hover {
+    color: #BE77C7;
+}
+
+.like-btn.active i, .comment-btn.active i {
+    color: #ff4757;
+}
+
+/* Стили для секции комментариев */
+.comments-section {
+    margin-top: 15px;
+    padding: 10px;
+    background: #424242;
+    border-radius: 5px;
+}
+
+.comment {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.comment:last-child {
+    border-bottom: none;
+}
+
+.add-comment-form {
+    display: flex;
+    margin-top: 10px;
+}
+
+.add-comment-form input {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px 0 0 4px;
+}
+
+.add-comment-form button {
+    padding: 8px 15px;
+    background: #7E4F84;
+    color: white;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+}
+
+a {
+    text-decoration: none;
+}
+

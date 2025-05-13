@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Друзья{% endblock %}
+
+{% block feed %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/friend.css') }}">
+<link href="/static/css/prof.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="/static/css/posts.css" rel="stylesheet">
+<div class="friend-container">
+  <div class="friend-container1">
+        <div class="friend-buttons">
+            <div class="friend-button friend-active" onclick="friendShowList(1)">Друзья</div>
+            <div class="friend-button2 friend-button" onclick="friendShowList(2)">Подписки</div>
+            <div class="friend-button3 friend-button" onclick="friendShowList(3)">Подписчики</div>
+        </div>
+
+        <div class="friend-list">
+            <ul id="friend-list1" class="friend-ul">
+                {% for frie in range(1,10) %}
+                {% for friend in friends %}
+                <li class="friend-li author-header">
+                    <img class="author-image" src="{{ url_for('static', filename=('user_img/' + friend.photo_avatar if friend.photo_avatar else 'img/avatar 1.png')) }}" alt="Avatar">
+                    <div class="friend_name">{{ friend.surname }} {{ friend.name }}</div>
+                    </li>
+                {% endfor %}{% endfor %}
+            </ul>
+
+            <ul id="friend-list2" class="friend-ul" style="display: none;">
+                <li class="friend-li">Элемент списка 2.1</li>
+                <li class="friend-li">Элемент списка 2.2</li>
+                <li class="friend-li">Элемент списка 2.3</li>
+            </ul>
+
+            <ul id="friend-list3" class="friend-ul" style="display: none;">
+                <li class="friend-li">Элемент списка 3.1</li>
+                <li class="friend-li">Элемент списка 3.2</li>
+                <li class="friend-li">Элемент списка 3.3</li>
+                <li class="friend-li">Элемент списка 3.4</li>
+                <li class="friend-li">Элемент списка 3.5</li>
+            </ul>
+        </div>
+    </div>
+    </div>
+<script src="{{ url_for('static', filename='js/friend.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,99 @@
+
+
+.banner_prof {
+    display: block;
+    background: #434343;
+    margin: auto;
+    width: 70%;
+    aspect-ratio: 16 / 8 ;
+    margin-left: 50px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: white;
+    border: 1px solid #555555;
+    position: relative;
+}
+
+.logo_profile {
+    margin: auto;
+    padding: 10px;
+    width: 90%;
+    max-width: 90%;
+    aspect-ratio: 16 / 7;
+    border-radius: 30px 30px 0 0;
+    object-fit: cover;
+    display: block;
+}
+
+.avatar-container_prof {
+    position: absolute;
+    bottom: 12%;
+    left: 10%;
+    display: flex;
+    align-items: flex-end;
+    gap: 15px;
+    z-index: 2;
+}
+
+.avatar_prof {
+    border: 5px solid white;
+    background-color: #ddd;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+
+.username_prof {
+    flex-direction: column;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    margin-bottom: 10px;
+}
+
+.prof-container {
+    color: #ffffff;
+    min-height: 80vh;
+    width: 70%;
+    max-width: 70%;
+    margin: auto;
+    position: relative;
+    display: flex;
+    flex-direction: column; /* Это сделает элементы внутри контейнера вертикальными */
+    gap: 20px; /* Добавит отступ между элементами */
+}
+
+/* Обновите стиль для block-posts, чтобы он также центрировался */
+.block-posts1 {
+    color: #ffffff;
+    width: 100%;
+    max-width: 100%;
+}
+
+.delete-post-btn {
+    background: none;
+    border: none;
+    color: #ff4d4d;
+    cursor: pointer;
+    margin-left: auto;
+    padding: 5px;
+    font-size: 16px;
+}
+
+.delete-post-btn:hover {
+    color: #ff0000;
+}
+
+.author-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+a {
+    color: inherit;
+}

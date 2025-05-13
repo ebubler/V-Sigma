@@ -3,6 +3,7 @@
 {% block title %}Главная страница{% endblock %}
 
 {% block feed %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="static/css/posts.css" rel="stylesheet">
 <div class="add-post">
@@ -49,7 +50,7 @@
         </div>
 
         <div class="mb-3">
-            <input class="add-post-input" type="file" multiple>
+            <input name="file-upload" class="add-post-input" type="file" multiple>
         </div>
         <div class="mb-3">{{ add_post_form.submit(class="add-post-input") }}</div>
     </form>
@@ -57,49 +58,13 @@
 <div class="block-posts">
     <button class="head-post" onclick="showAddPost()">Добавить пост</button>
     </br>
-        {% for i in posts %}
-            </br>
-            <div class="post-style">
-                <image class="author-image" src="\static\user_img\avatar_{{ i.author }}.png"></image>
-                <div class="author-post">{{ i.author_surname }} {{ i.author_name }}</div>
-                <div>{{ i.title }}</div>
-                <div class="content-post-text">{{ i.description }}</div>
-                <div class="content-post">
-                    <div class="content-post-media">
-                        {% if i.content %}
-                        <div id="postCarousel-{{ loop.index }}" class="carousel slide" data-bs-ride="carousel">
-                            <div class="carousel-inner">
-                                {% for media in i.content.split(',') %}
-                                <div class="carousel-item {% if loop.first %}active{% endif %}">
-                                    {% if media.lower().endswith(('.jpg', '.jpeg', '.png', '.gif')) %}
-                                    <img src="{{ url_for('static', filename='uploads/media/' + media) }}" class="d-block w-100" alt="Media">
-                                    {% elif media.lower().endswith(('.mp4', '.webm')) %}
-                                    <video controls class="d-block w-100">
-                                        <source src="{{ url_for('static', filename='uploads/media/' + media) }}" type="video/mp4">
-                                    </video>
-                                    {% endif %}
-                                </div>
-                                {% endfor %}
-                            </div>
-
-                            <!-- Кнопки навигации (только если больше 1 медиа) -->
-                            {% if i.content.split(',')|length > 1 %}
-                            <button class="carousel-control-prev" type="button" data-bs-target="#postCarousel-{{ loop.index }}" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Previous</span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#postCarousel-{{ loop.index }}" data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Next</span>
-                            </button>
-                            {% endif %}
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-                <div class="date-post">{{ i.date_create.strftime('%H:%M %Y-%m-%d') }}</div>
-            </div>
-        {% endfor %}
+    </br>
+    <div id="posts-container">
+        <!-- Посты будут загружаться здесь через JS -->
+    </div>
+    <div class="load-more-container">
+        <button id="load-more-btn" class="load-more-btn">Показать еще</button>
+    </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script src="static/js/posts.js"></script>
